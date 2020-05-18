@@ -1,0 +1,36 @@
+version: "3"
+services:
+
+ # MySQL Loja 
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./docker:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: lojapwd
+      MYSQL_USER: loja
+      MYSQL_PASSWORD: lojasecret
+      MYSQL_DATABASE: loja_schema
+    ports:
+      - "3306:3306"
+    networks:  
+      deploy_net:
+        ipv4_address: 192.168.35.10
+
+  aplicacao:
+    image: bitnami/tomcat:7.0.88-r26
+    container_name: tomcat_v3
+    #volumes:
+     # - ./deploy:/$CATALINA_DEPLOY
+    ports:
+      - "8080:8080"    
+    networks:  
+      deploy_net:
+        ipv4_address: 192.168.35.12       
+      
+networks:
+  deploy_net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 192.168.35.0/24
